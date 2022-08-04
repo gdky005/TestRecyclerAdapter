@@ -47,9 +47,9 @@ public class FirstFragment extends Fragment {
                 //加载完成（注意不是加载结束，而是本次数据加载结束并且还有下页数据）
 //                mQuickAdapter.loadMoreComplete();
                 //加载失败
-                mQuickAdapter.loadMoreFail();
-//                加载结束
-//                mQuickAdapter.loadMoreEnd();
+//                mQuickAdapter.loadMoreFail();
+                //加载结束
+                mQuickAdapter.loadMoreEnd();
 //                mQuickAdapter.loadMoreEnd(false);
             }, 1000);
         }, getRecyclerView());
