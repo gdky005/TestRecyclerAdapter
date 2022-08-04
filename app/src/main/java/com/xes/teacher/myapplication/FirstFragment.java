@@ -26,6 +26,8 @@ public class FirstFragment extends Fragment {
 
 
     private void initAdapter() {
+        // 打开动画效果
+        homeAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
 
         homeAdapter.setOnItemClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
