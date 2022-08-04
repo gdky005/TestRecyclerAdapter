@@ -1,5 +1,7 @@
 package com.xes.teacher.myapplication;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,11 @@ public class FirstFragment extends Fragment {
     private void initAdapter() {
         // 打开动画效果
         homeAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        // 添加自定义动画。
+        homeAdapter.openLoadAnimation(view -> new Animator[] {
+                ObjectAnimator.ofFloat(view, "scaleY", 1, 1.5f, 1),
+                ObjectAnimator.ofFloat(view, "scaleX", 1, 1.5f, 1)
+        });
         // 默认只有一次动画，设置为 false 会显示多次动画。
         homeAdapter.isFirstOnly(false);
 
