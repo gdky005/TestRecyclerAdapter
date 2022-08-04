@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.xes.teacher.myapplication.databinding.FragmentFirstBinding;
+import com.xes.teacher.myapplication.loadmore.CustomLoadMoreView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +45,12 @@ public class FirstFragment extends Fragment {
             toast("开始刷新啦");
             getRecyclerView().postDelayed(() -> {
                 //加载完成（注意不是加载结束，而是本次数据加载结束并且还有下页数据）
-//                homeAdapter.loadMoreComplete();
+//                mQuickAdapter.loadMoreComplete();
                 //加载失败
-//                homeAdapter.loadMoreFail();
-                //加载结束
-                mQuickAdapter.loadMoreEnd();
-//                homeAdapter.loadMoreEnd(false);
+                mQuickAdapter.loadMoreFail();
+//                加载结束
+//                mQuickAdapter.loadMoreEnd();
+//                mQuickAdapter.loadMoreEnd(false);
             }, 1000);
         }, getRecyclerView());
 
@@ -59,6 +60,8 @@ public class FirstFragment extends Fragment {
 //        mQuickAdapter.setEnableLoadMore(false);
         // 预加载数据
 //        mQuickAdapter.setPreLoadNumber(5);
+
+        mQuickAdapter.setLoadMoreView(new CustomLoadMoreView());
 
     }
 
