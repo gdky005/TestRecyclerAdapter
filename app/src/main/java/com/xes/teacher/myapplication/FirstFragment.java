@@ -3,6 +3,7 @@ package com.xes.teacher.myapplication;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,55 @@ import com.xes.teacher.myapplication.databinding.FragmentFirstBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+// 参见：https://www.jianshu.com/p/b343fcff51b0
 public class FirstFragment extends Fragment {
+
+    private static final String TAG = "FirstFragment";
 
     private FragmentFirstBinding binding;
     private HomeAdapter homeAdapter;
 
+    public static final int MAX_DATA = 40;
+
 
     private void initAdapter() {
+        setAnimation();
+        setOnClickListener();
+        setHeaderAndFooter();
+
+
+        homeAdapter.setOnLoadMoreListener(() -> {
+            Log.d(TAG, "initAdapter: ");
+            toast("开始刷新啦");
+            getRecyclerView().postDelayed(() -> {
+                //加载完成（注意不是加载结束，而是本次数据加载结束并且还有下页数据）
+//                homeAdapter.loadMoreComplete();
+                //加载失败
+//                homeAdapter.loadMoreFail();
+                //加载结束
+                homeAdapter.loadMoreEnd();
+//                homeAdapter.loadMoreEnd(false);
+            }, 1000);
+        }, getRecyclerView());
+
+        homeAdapter.setNewData(getData());
+        // 禁用加载更多
+        homeAdapter.disableLoadMoreIfNotFullPage();
+
+    }
+
+    private void setHeaderAndFooter() {
+        homeAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.item_header, null));
+////        homeAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.item_header2, null));
+//        homeAdapter.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.item_footer, null));
+
+        // 这三个有点困惑。
+//        homeAdapter.setHeaderFooterEmpty(false, false);
+//        homeAdapter.setFooterViewAsFlow(true);
+//        homeAdapter.setHeaderViewAsFlow(false);
+    }
+
+    private void setAnimation() {
         // 打开动画效果
         homeAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         // 添加自定义动画。
@@ -37,18 +80,20 @@ public class FirstFragment extends Fragment {
         });
         // 默认只有一次动画，设置为 false 会显示多次动画。
         homeAdapter.isFirstOnly(false);
+    }
 
+    private void setOnClickListener() {
         homeAdapter.setOnItemClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
             if (testBean != null) {
-                Toast.makeText(getContext(), "click：" + testBean.getText(), Toast.LENGTH_SHORT).show();
+                toast("click：" + testBean.getText());
             }
         });
 
         homeAdapter.setOnItemLongClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
             if (testBean != null) {
-                Toast.makeText(getContext(), "long：" + testBean.getText(), Toast.LENGTH_SHORT).show();
+                toast("long：" + testBean.getText());
             }
             return true;
         });
@@ -58,10 +103,10 @@ public class FirstFragment extends Fragment {
 
             switch (view.getId()) {
                 case R.id.text1:
-                    Toast.makeText(getContext(), "click text1:" + position, Toast.LENGTH_SHORT).show();
+                    toast("click text1:" + position);
                     break;
                 case R.id.text2:
-                    Toast.makeText(getContext(), "click text2:" + position, Toast.LENGTH_SHORT).show();
+                    toast("click text2:" + position);
                     break;
             }
         });
@@ -71,14 +116,22 @@ public class FirstFragment extends Fragment {
 
             switch (view.getId()) {
                 case R.id.text1:
-                    Toast.makeText(getContext(), "long text1:" + position, Toast.LENGTH_SHORT).show();
+                    toast("long text1:" + position);
                     break;
                 case R.id.text2:
-                    Toast.makeText(getContext(), "long text2:" + position, Toast.LENGTH_SHORT).show();
+                    toast("long text2:" + position);
                     break;
             }
             return true;
         });
+    }
+
+    /**
+     * 显示 Toast
+     * @param msg msg
+     */
+    private void toast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,17 +153,28 @@ public class FirstFragment extends Fragment {
         });
 
         ArrayList<TestBean> arrayList = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
+//        getData(arrayList);
+
+        homeAdapter = new HomeAdapter(arrayList);
+        initAdapter();
+        RecyclerView rvRecyclerView = getRecyclerView();
+        rvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvRecyclerView.setAdapter(homeAdapter);
+    }
+
+    private ArrayList<TestBean> getData() {
+        ArrayList<TestBean> arrayList = new ArrayList<>();
+        for (int i = 0; i < MAX_DATA; i++) {
             TestBean testBean = new TestBean();
             testBean.setText("第" + (i + 1) + "个");
             arrayList.add(testBean);
         }
+        return arrayList;
+    }
 
-        homeAdapter = new HomeAdapter(arrayList);
-        initAdapter();
-        RecyclerView rvRecyclerView = binding.rvRecyclerView;
-        rvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvRecyclerView.setAdapter(homeAdapter);
+    @NonNull
+    private RecyclerView getRecyclerView() {
+        return binding.rvRecyclerView;
     }
 
     @Override
