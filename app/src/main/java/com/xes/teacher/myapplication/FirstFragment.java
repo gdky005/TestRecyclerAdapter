@@ -27,7 +27,9 @@ public class FirstFragment extends Fragment {
 
     private void initAdapter() {
         // 打开动画效果
-        homeAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
+        homeAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        // 默认只有一次动画，设置为 false 会显示多次动画。
+        homeAdapter.isFirstOnly(false);
 
         homeAdapter.setOnItemClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
