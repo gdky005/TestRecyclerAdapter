@@ -9,7 +9,8 @@
         android:id="@+id/ll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/button_first"
@@ -25,11 +26,9 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_view"
-        android:layout_marginTop="100dp"/>
+        android:layout_below="@+id/ll_view"/>
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,13 +22,56 @@ import java.util.List;
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
+    private HomeAdapter homeAdapter;
+
+
+    private void initAdapter() {
+
+        homeAdapter.setOnItemClickListener((adapter, view, position) -> {
+            TestBean testBean = (TestBean) adapter.getItem(position);
+            if (testBean != null) {
+                Toast.makeText(getContext(), "click：" + testBean.getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        homeAdapter.setOnItemLongClickListener((adapter, view, position) -> {
+            TestBean testBean = (TestBean) adapter.getItem(position);
+            if (testBean != null) {
+                Toast.makeText(getContext(), "long：" + testBean.getText(), Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+
+        homeAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            TestBean testBean = (TestBean) adapter.getItem(position);
+
+            switch (view.getId()) {
+                case R.id.text1:
+                    Toast.makeText(getContext(), "click text1:" + position, Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.text2:
+                    Toast.makeText(getContext(), "click text2:" + position, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
+
+        homeAdapter.setOnItemChildLongClickListener((adapter, view, position) -> {
+            TestBean testBean = (TestBean) adapter.getItem(position);
+
+            switch (view.getId()) {
+                case R.id.text1:
+                    Toast.makeText(getContext(), "long text1:" + position, Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.text2:
+                    Toast.makeText(getContext(), "long text2:" + position, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            return true;
+        });
+    }
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
@@ -51,7 +95,8 @@ public class FirstFragment extends Fragment {
             arrayList.add(testBean);
         }
 
-        HomeAdapter homeAdapter = new HomeAdapter(R.layout.item_home, arrayList);
+        homeAdapter = new HomeAdapter(arrayList);
+        initAdapter();
         RecyclerView rvRecyclerView = binding.rvRecyclerView;
         rvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRecyclerView.setAdapter(homeAdapter);
@@ -65,13 +110,21 @@ public class FirstFragment extends Fragment {
 
 
     public class HomeAdapter extends BaseQuickAdapter<TestBean, BaseViewHolder> {
-        public HomeAdapter(int layoutResId, List data) {
-            super(layoutResId, data);
+        public HomeAdapter(List data) {
+            super(R.layout.item_home, data);
         }
 
         @Override
         protected void convert(BaseViewHolder helper, TestBean item) {
             helper.setText(R.id.text, item.getText());
+            helper.setText(R.id.text1, helper.getAdapterPosition() + "_type1");
+            helper.setText(R.id.text2, helper.getAdapterPosition() + "_type2");
+
+            helper.addOnClickListener(R.id.text1);
+            helper.addOnClickListener(R.id.text2);
+
+            helper.addOnLongClickListener(R.id.text1);
+            helper.addOnLongClickListener(R.id.text2);
         }
     }
 }
