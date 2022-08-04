@@ -55,9 +55,10 @@ public class FirstFragment extends Fragment {
 
         mQuickAdapter.setNewData(getData());
         // 禁用加载更多
-        mQuickAdapter.disableLoadMoreIfNotFullPage();
-
-        mQuickAdapter.setEnableLoadMore(false);
+//        mQuickAdapter.disableLoadMoreIfNotFullPage();
+//        mQuickAdapter.setEnableLoadMore(false);
+        // 预加载数据
+//        mQuickAdapter.setPreLoadNumber(5);
 
     }
 
