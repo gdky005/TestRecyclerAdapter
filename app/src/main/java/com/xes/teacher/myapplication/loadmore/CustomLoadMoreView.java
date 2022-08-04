@@ -11,7 +11,7 @@ public class CustomLoadMoreView extends LoadMoreView {
 
     @Override
     protected int getLoadingViewId() {
-        return R.id.tv_loading;
+        return R.id.ll_loading;
     }
 
     @Override
