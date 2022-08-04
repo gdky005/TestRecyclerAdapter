@@ -28,7 +28,7 @@ public class FirstFragment extends Fragment {
     private static final String TAG = "FirstFragment";
 
     private FragmentFirstBinding binding;
-    private HomeAdapter homeAdapter;
+    private HomeAdapter mQuickAdapter;
 
     public static final int MAX_DATA = 40;
 
@@ -39,7 +39,7 @@ public class FirstFragment extends Fragment {
         setHeaderAndFooter();
 
 
-        homeAdapter.setOnLoadMoreListener(() -> {
+        mQuickAdapter.setOnLoadMoreListener(() -> {
             Log.d(TAG, "initAdapter: ");
             toast("开始刷新啦");
             getRecyclerView().postDelayed(() -> {
@@ -48,19 +48,21 @@ public class FirstFragment extends Fragment {
                 //加载失败
 //                homeAdapter.loadMoreFail();
                 //加载结束
-                homeAdapter.loadMoreEnd();
+                mQuickAdapter.loadMoreEnd();
 //                homeAdapter.loadMoreEnd(false);
             }, 1000);
         }, getRecyclerView());
 
-        homeAdapter.setNewData(getData());
+        mQuickAdapter.setNewData(getData());
         // 禁用加载更多
-        homeAdapter.disableLoadMoreIfNotFullPage();
+        mQuickAdapter.disableLoadMoreIfNotFullPage();
+
+        mQuickAdapter.setEnableLoadMore(false);
 
     }
 
     private void setHeaderAndFooter() {
-        homeAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.item_header, null));
+        mQuickAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.item_header, null));
 ////        homeAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.item_header2, null));
 //        homeAdapter.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.item_footer, null));
 
@@ -72,25 +74,25 @@ public class FirstFragment extends Fragment {
 
     private void setAnimation() {
         // 打开动画效果
-        homeAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        mQuickAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         // 添加自定义动画。
-        homeAdapter.openLoadAnimation(view -> new Animator[] {
+        mQuickAdapter.openLoadAnimation(view -> new Animator[] {
                 ObjectAnimator.ofFloat(view, "scaleY", 1, 1.5f, 1),
                 ObjectAnimator.ofFloat(view, "scaleX", 1, 1.5f, 1)
         });
         // 默认只有一次动画，设置为 false 会显示多次动画。
-        homeAdapter.isFirstOnly(false);
+        mQuickAdapter.isFirstOnly(false);
     }
 
     private void setOnClickListener() {
-        homeAdapter.setOnItemClickListener((adapter, view, position) -> {
+        mQuickAdapter.setOnItemClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
             if (testBean != null) {
                 toast("click：" + testBean.getText());
             }
         });
 
-        homeAdapter.setOnItemLongClickListener((adapter, view, position) -> {
+        mQuickAdapter.setOnItemLongClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
             if (testBean != null) {
                 toast("long：" + testBean.getText());
@@ -98,7 +100,7 @@ public class FirstFragment extends Fragment {
             return true;
         });
 
-        homeAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        mQuickAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
 
             switch (view.getId()) {
@@ -111,7 +113,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        homeAdapter.setOnItemChildLongClickListener((adapter, view, position) -> {
+        mQuickAdapter.setOnItemChildLongClickListener((adapter, view, position) -> {
             TestBean testBean = (TestBean) adapter.getItem(position);
 
             switch (view.getId()) {
@@ -155,11 +157,11 @@ public class FirstFragment extends Fragment {
         ArrayList<TestBean> arrayList = new ArrayList<>();
 //        getData(arrayList);
 
-        homeAdapter = new HomeAdapter(arrayList);
+        mQuickAdapter = new HomeAdapter(arrayList);
         initAdapter();
         RecyclerView rvRecyclerView = getRecyclerView();
         rvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvRecyclerView.setAdapter(homeAdapter);
+        rvRecyclerView.setAdapter(mQuickAdapter);
     }
 
     private ArrayList<TestBean> getData() {
